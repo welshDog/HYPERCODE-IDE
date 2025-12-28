@@ -1,0 +1,23 @@
+{
+  "name": "hypercode-ide",
+  "private": true,
+  "workspaces": [
+    "packages/core",
+    "packages/compiler",
+    "packages/ide"
+  ],
+  "scripts": {
+    "build": "yarn workspaces run build",
+    "build:core": "yarn workspace @hypercode/core build",
+    "build:compiler": "yarn workspace @hypercode/compiler build",
+    "build:ide": "yarn workspace @hypercode/ide build",
+    "dev": "yarn workspace @hypercode/ide dev",
+    "test": "yarn workspaces run test",
+    "clean": "rimraf node_modules packages/*/node_modules packages/*/dist .next",
+    "postinstall": "yarn workspaces run build"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.1"
+  },
+  "packageManager": "yarn@1.22.22"
+}

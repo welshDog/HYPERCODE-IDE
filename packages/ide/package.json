@@ -1,0 +1,28 @@
+{
+  "name": "@hypercode/ide",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@hypercode/compiler": "workspace:*",
+    "@hypercode/core": "workspace:*",
+    "next": "latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/node": "20.10.5",
+    "@types/react": "18.2.46",
+    "@types/react-dom": "18.2.18",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "5.3.3"
+  }
+}

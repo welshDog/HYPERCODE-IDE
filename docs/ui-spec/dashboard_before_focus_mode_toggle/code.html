@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HyperCode - AI Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#06f906",
+                        "background-light": "#f5f8f5",
+                        "background-dark": "#0f230f",
+                        "surface-dark": "#131c13", 
+                        "border-dark": "#273a27",
+                        "text-muted": "#9bbb9b"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["Fira Code", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for neurodivergent friendliness */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f230f; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #273a27; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a553a; 
+        }
+        .code-line-number {
+            color: #3a553a;
+        }
+        .code-line:hover {
+            background-color: rgba(6, 249, 6, 0.03);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-white font-display overflow-hidden h-screen flex flex-col group/design-root">
+<!-- Header / Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-border-dark bg-surface-dark px-6 py-3 shrink-0 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-white">
+<div class="size-8 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 32px;">terminal</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-tight">HyperCode <span class="text-xs font-normal text-text-muted opacity-60 ml-1">v2.4</span></h2>
+</div>
+<!-- Global Search -->
+<label class="hidden md:flex flex-col min-w-64 !h-10 w-96">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full border border-[#273a27] bg-[#1a261a] focus-within:border-primary/50 transition-colors">
+<div class="text-[#9bbb9b] flex items-center justify-center pl-3">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none overflow-hidden bg-transparent text-white focus:outline-0 border-none h-full placeholder:text-[#5a705a] px-3 text-sm font-normal" placeholder="Search files, symbols, or actions..." value=""/>
+<div class="flex items-center pr-3">
+<kbd class="hidden lg:inline-flex items-center gap-1 rounded border border-[#273a27] bg-[#111811] px-1.5 font-mono text-[10px] font-medium text-text-muted">
+<span class="text-xs">⌘</span>K
+                        </kbd>
+</div>
+</div>
+</label>
+</div>
+<div class="flex items-center gap-6">
+<!-- Focus Mode Toggle (Inactive State) -->
+<div class="flex items-center gap-3 bg-[#1a261a] rounded-full px-4 py-1.5 border border-[#273a27]">
+<span class="text-sm font-bold text-text-muted tracking-wide uppercase text-[11px]">Focus Mode</span>
+<button aria-checked="false" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-[#111811] bg-[#3a553a]" role="switch">
+<span class="sr-only">Use setting</span>
+<span aria-hidden="true" class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+</button>
+</div>
+<!-- Header Actions -->
+<div class="flex gap-2">
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-lg hover:bg-[#273a27] text-white transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full animate-pulse-slow"></span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-lg hover:bg-[#273a27] text-white transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="ml-2 h-10 w-10 rounded-full bg-gradient-to-tr from-primary to-blue-500 p-[2px]" role="button">
+<div class="h-full w-full rounded-full bg-[#111811] flex items-center justify-center overflow-hidden" data-alt="User Avatar Abstract">
+<img alt="User Profile Avatar" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASN3IbZ94bgq_6MU4V3MTkVkYC88QfCOG26MMJyypsA5AFCspC5qyI804KvDT0jX2cAUjBH_8yCvz8a2EjeYqGgkebLOjQAZtLGPmj6I8WSnR_XP_Tcd_9dvDvltLtaLuSissdebNu1BjbxjqM6vAd4MyDczyvhZ9qvGSpgxlIRlMu3r2Fo-QqvcK3NuLSg5SV7fbmIVj37wYYFSbofXGFi1t9U0Dfer1x-WyWA0f16G71Gs7gvt3msxCiwhBKJI59bsNSX1RgzOOW"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Left Sidebar: Project Navigator -->
+<aside class="w-72 border-r border-border-dark flex flex-col bg-surface-dark overflow-y-auto hidden md:flex shrink-0">
+<div class="flex flex-col p-3 gap-2">
+<div class="flex items-center justify-between px-2 pb-2 pt-1">
+<span class="text-xs font-bold text-text-muted uppercase tracking-wider">Explorer</span>
+<span class="material-symbols-outlined text-text-muted text-sm cursor-pointer hover:text-white">more_horiz</span>
+</div>
+<!-- Open Files Accordion -->
+<details class="flex flex-col rounded-lg bg-[#1a261a]/30 border border-transparent open:border-[#273a27] open:bg-[#1a261a] transition-all group" open="">
+<summary class="flex cursor-pointer items-center justify-between px-3 py-2 select-none">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-muted group-open:rotate-90 transition-transform text-lg">chevron_right</span>
+<p class="text-white text-sm font-medium">Open Files</p>
+</div>
+</summary>
+<div class="flex flex-col pb-2 pl-3">
+<a class="flex items-center gap-2 py-1.5 px-3 bg-[#273a27]/50 rounded-md border-l-2 border-primary text-white mb-1" href="#">
+<span class="material-symbols-outlined text-yellow-400 text-lg">javascript</span>
+<span class="text-sm font-mono">auth.ts</span>
+<span class="ml-auto text-xs text-text-muted">M</span>
+</a>
+<a class="flex items-center gap-2 py-1.5 px-3 hover:bg-[#273a27]/30 rounded-md text-text-muted" href="#">
+<span class="material-symbols-outlined text-blue-400 text-lg">settings</span>
+<span class="text-sm font-mono">server.config</span>
+</a>
+<a class="flex items-center gap-2 py-1.5 px-3 hover:bg-[#273a27]/30 rounded-md text-text-muted" href="#">
+<span class="material-symbols-outlined text-gray-400 text-lg">description</span>
+<span class="text-sm font-mono">README.md</span>
+</a>
+</div>
+</details>
+<!-- Project Folders -->
+<details class="flex flex-col group">
+<summary class="flex cursor-pointer items-center justify-between px-3 py-2 select-none hover:bg-[#1a261a] rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-muted group-open:rotate-90 transition-transform text-lg">chevron_right</span>
+<p class="text-white text-sm font-medium">hypercode-core</p>
+</div>
+</summary>
+<div class="flex flex-col pl-6 border-l border-[#273a27] ml-5 mt-1">
+<details class="group/inner" open="">
+<summary class="flex cursor-pointer items-center gap-2 py-1.5 px-2 hover:text-white text-text-muted select-none">
+<span class="material-symbols-outlined text-lg group-open/inner:rotate-90 transition-transform">chevron_right</span>
+<span class="material-symbols-outlined text-yellow-600 text-lg">folder</span>
+<span class="text-sm font-mono">src</span>
+</summary>
+<div class="pl-6 flex flex-col">
+<div class="flex items-center gap-2 py-1.5 px-2 hover:bg-[#273a27]/30 rounded cursor-pointer text-white">
+<span class="material-symbols-outlined text-yellow-400 text-lg">javascript</span>
+<span class="text-sm font-mono">auth.ts</span>
+</div>
+<div class="flex items-center gap-2 py-1.5 px-2 hover:bg-[#273a27]/30 rounded cursor-pointer text-text-muted">
+<span class="material-symbols-outlined text-blue-300 text-lg">javascript</span>
+<span class="text-sm font-mono">utils.ts</span>
+</div>
+</div>
+</details>
+<div class="flex items-center gap-2 py-1.5 px-2 hover:bg-[#273a27]/30 rounded cursor-pointer text-text-muted">
+<span class="material-symbols-outlined text-lg opacity-0">chevron_right</span>
+<span class="material-symbols-outlined text-purple-400 text-lg">folder</span>
+<span class="text-sm font-mono">api</span>
+</div>
+<div class="flex items-center gap-2 py-1.5 px-2 hover:bg-[#273a27]/30 rounded cursor-pointer text-text-muted">
+<span class="material-symbols-outlined text-lg opacity-0">chevron_right</span>
+<span class="material-symbols-outlined text-green-400 text-lg">folder</span>
+<span class="text-sm font-mono">public</span>
+</div>
+</div>
+</details>
+</div>
+</aside>
+<!-- Center: Editor Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-[#0c120c] relative">
+<!-- Tabs -->
+<div class="flex border-b border-border-dark bg-[#111811] px-0 gap-0 overflow-x-auto no-scrollbar">
+<a class="flex items-center border-r border-[#273a27] bg-[#0c120c] min-w-40 px-4 py-2.5 border-t-2 border-t-primary text-white gap-2 group relative" href="#">
+<span class="material-symbols-outlined text-yellow-400 text-lg">javascript</span>
+<p class="text-xs font-bold font-mono tracking-wide">auth.ts</p>
+<span class="material-symbols-outlined text-sm ml-auto opacity-0 group-hover:opacity-100 hover:text-red-400">close</span>
+</a>
+<a class="flex items-center border-r border-[#273a27] bg-[#162016] min-w-40 px-4 py-2.5 border-t-2 border-t-transparent text-text-muted gap-2 group hover:bg-[#1a261a]" href="#">
+<span class="material-symbols-outlined text-blue-400 text-lg">settings</span>
+<p class="text-xs font-medium font-mono tracking-wide">server.config</p>
+<span class="material-symbols-outlined text-sm ml-auto opacity-0 group-hover:opacity-100 hover:text-white">close</span>
+</a>
+<a class="flex items-center border-r border-[#273a27] bg-[#162016] min-w-40 px-4 py-2.5 border-t-2 border-t-transparent text-text-muted gap-2 group hover:bg-[#1a261a]" href="#">
+<span class="material-symbols-outlined text-gray-400 text-lg">description</span>
+<p class="text-xs font-medium font-mono tracking-wide">README.md</p>
+<span class="material-symbols-outlined text-sm ml-auto opacity-0 group-hover:opacity-100 hover:text-white">close</span>
+</a>
+<!-- Add Tab Button -->
+<div class="flex items-center justify-center px-3 hover:bg-[#273a27] cursor-pointer text-text-muted">
+<span class="material-symbols-outlined text-lg">add</span>
+</div>
+</div>
+<!-- Code Editor -->
+<div class="flex-1 overflow-y-auto font-mono text-[13px] leading-6 p-4 relative bg-[#0c120c] group/editor" id="code-editor">
+<!-- Breadcrumbs -->
+<div class="text-xs text-text-muted/60 mb-4 flex items-center gap-2 sticky top-0 bg-[#0c120c] z-10 py-1">
+                    src <span class="material-symbols-outlined text-[10px]">chevron_right</span> auth.ts <span class="material-symbols-outlined text-[10px]">chevron_right</span> Middleware
+                </div>
+<!-- Code Lines -->
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">1</div>
+<div class="whitespace-pre"><span class="text-purple-400">import</span> { <span class="text-yellow-300">NextResponse</span> } <span class="text-purple-400">from</span> <span class="text-green-400">'next/server'</span>;</div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">2</div>
+<div class="whitespace-pre"><span class="text-purple-400">import</span> type { <span class="text-yellow-300">NextRequest</span> } <span class="text-purple-400">from</span> <span class="text-green-400">'next/server'</span>;</div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">3</div>
+<div class="whitespace-pre"></div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">4</div>
+<div class="whitespace-pre"><span class="text-gray-500">// Check if the user is authenticated via JWT token</span></div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">5</div>
+<div class="whitespace-pre"><span class="text-purple-400">export function</span> <span class="text-blue-400">middleware</span>(<span class="text-orange-300">request</span>: <span class="text-yellow-300">NextRequest</span>) {</div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4 bg-[#1a261a]">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0 text-white font-bold">6</div>
+<div class="whitespace-pre"> <span class="text-purple-400">const</span> <span class="text-orange-300">token</span> = <span class="text-orange-300">request</span>.<span class="text-blue-300">cookies</span>.<span class="text-blue-400">get</span>(<span class="text-green-400">'auth_token'</span>)?.<span class="text-orange-300">value</span>;</div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">7</div>
+<div class="whitespace-pre"> </div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">8</div>
+<div class="whitespace-pre"> <span class="text-purple-400">if</span> (!<span class="text-orange-300">token</span>) {</div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">9</div>
+<div class="whitespace-pre"> <span class="text-purple-400">return</span> <span class="text-yellow-300">NextResponse</span>.<span class="text-blue-400">redirect</span>(<span class="text-purple-400">new</span> <span class="text-yellow-300">URL</span>(<span class="text-green-400">'/login'</span>, <span class="text-orange-300">request</span>.<span class="text-orange-300">url</span>));</div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">10</div>
+<div class="whitespace-pre">  }</div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">11</div>
+<div class="whitespace-pre"></div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">12</div>
+<div class="whitespace-pre"> <span class="text-gray-500">// TODO: Refactor logic to use external auth service</span></div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">13</div>
+<div class="whitespace-pre"> <span class="text-purple-400">return</span> <span class="text-yellow-300">NextResponse</span>.<span class="text-blue-400">next</span>();</div>
+</div>
+<div class="code-line flex hover:bg-[#1a261a] -mx-4 px-4">
+<div class="code-line-number select-none pr-4 text-right w-12 shrink-0">14</div>
+<div class="whitespace-pre">}</div>
+</div>
+<!-- Cursor -->
+<div class="absolute left-64 top-[152px] h-5 w-0.5 bg-primary animate-pulse z-20"></div>
+<!-- Suggestion Tooltip (Neurodivergent friendly: clear context) -->
+<div class="absolute left-64 top-[176px] bg-[#1a261a] border border-[#3a553a] rounded-lg shadow-2xl p-2 z-30 min-w-64">
+<div class="flex items-center justify-between text-xs text-text-muted mb-1 pb-1 border-b border-[#273a27]">
+<span>AI Suggestion</span>
+<span class="text-[10px]">Tab to accept</span>
+</div>
+<p class="text-xs text-white font-mono">verifyToken(token, process.env.JWT_SECRET)</p>
+</div>
+</div>
+<!-- Composer (AI Prompt Input) -->
+<div class="p-4 bg-[#111811] border-t border-border-dark">
+<div class="relative flex w-full flex-1 items-stretch rounded-xl bg-[#1a261a] border border-[#273a27] focus-within:border-primary/50 shadow-lg">
+<div class="flex items-center pl-4 py-3">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden bg-transparent text-white focus:outline-0 border-none h-full placeholder:text-[#5a705a] px-4 text-sm font-medium" placeholder="Ask Gemini to refactor or explain this code..." value=""/>
+<div class="flex items-center justify-center pr-2 gap-1">
+<button class="flex items-center justify-center p-2 rounded-lg hover:bg-[#273a27] text-text-muted transition-colors" title="Attach context">
+<span class="material-symbols-outlined text-xl">attach_file</span>
+</button>
+<button class="flex items-center justify-center p-2 rounded-lg hover:bg-[#273a27] text-text-muted transition-colors" title="Voice input">
+<span class="material-symbols-outlined text-xl">mic</span>
+</button>
+<button class="min-w-20 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary hover:bg-green-400 text-black text-sm font-bold ml-2 shadow-[0_0_10px_rgba(6,249,6,0.2)] transition-all">
+                            Generate
+                        </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Right Sidebar: AI & Preview -->
+<aside class="w-80 border-l border-border-dark flex flex-col bg-surface-dark hidden xl:flex shrink-0">
+<!-- Top: AI Timeline/Reasoning -->
+<div class="flex-1 overflow-y-auto border-b border-border-dark flex flex-col">
+<div class="p-3 border-b border-border-dark bg-[#162016] flex justify-between items-center sticky top-0 z-10">
+<h3 class="font-bold text-xs uppercase tracking-wider text-text-muted flex items-center gap-2">
+<span class="material-symbols-outlined text-base">psychology</span>
+                        Reasoning Log
+                    </h3>
+<span class="text-[10px] bg-[#273a27] px-2 py-0.5 rounded text-white">Idle</span>
+</div>
+<div class="flex flex-col p-4 relative">
+<!-- Timeline Item 1 -->
+<div class="grid grid-cols-[24px_1fr] gap-x-3 pb-6">
+<div class="flex flex-col items-center">
+<div class="size-6 rounded-full bg-[#273a27] flex items-center justify-center border border-[#3a553a]">
+<span class="material-symbols-outlined text-xs text-text-muted">check</span>
+</div>
+<div class="w-0.5 bg-[#273a27] h-full grow my-1"></div>
+</div>
+<div>
+<p class="text-text-muted text-xs font-mono mb-1">10:42 AM</p>
+<p class="text-white text-sm font-medium">Dependencies analyzed</p>
+<p class="text-text-muted text-xs mt-1">Found 3 outdated packages impacting auth.</p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="grid grid-cols-[24px_1fr] gap-x-3 pb-6">
+<div class="flex flex-col items-center">
+<div class="size-6 rounded-full bg-[#273a27] flex items-center justify-center border border-[#3a553a]">
+<span class="material-symbols-outlined text-xs text-text-muted">shield</span>
+</div>
+<div class="w-0.5 bg-[#273a27] h-full grow my-1"></div>
+</div>
+<div>
+<p class="text-text-muted text-xs font-mono mb-1">10:43 AM</p>
+<p class="text-white text-sm font-medium">Security Scan</p>
+<p class="text-text-muted text-xs mt-1">No vulnerabilities found in <code class="bg-[#273a27] px-1 rounded">middleware.ts</code>.</p>
+</div>
+</div>
+<!-- Timeline Item 3 (Current) -->
+<div class="grid grid-cols-[24px_1fr] gap-x-3">
+<div class="flex flex-col items-center">
+<div class="size-6 rounded-full bg-primary/20 flex items-center justify-center border border-primary animate-pulse">
+<span class="material-symbols-outlined text-xs text-primary">hourglass_empty</span>
+</div>
+</div>
+<div>
+<p class="text-primary text-xs font-mono mb-1">Now</p>
+<p class="text-white text-sm font-medium">Waiting for input...</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom: Preview/Terminal -->
+<div class="h-64 flex flex-col bg-[#0c120c]">
+<div class="px-3 py-2 border-b border-border-dark bg-[#162016] flex justify-between items-center">
+<div class="flex gap-4">
+<h3 class="font-bold text-xs uppercase tracking-wider text-white border-b-2 border-primary pb-2 -mb-2.5">Terminal</h3>
+<h3 class="font-bold text-xs uppercase tracking-wider text-text-muted pb-2 cursor-pointer hover:text-white">Output</h3>
+</div>
+<div class="flex gap-2 opacity-60 hover:opacity-100">
+<span class="material-symbols-outlined text-sm cursor-pointer">delete</span>
+<span class="material-symbols-outlined text-sm cursor-pointer">keyboard_arrow_up</span>
+</div>
+</div>
+<div class="p-4 font-mono text-xs text-text-muted overflow-y-auto flex-1 custom-scrollbar">
+<p class="mb-1"><span class="text-green-500">➜</span> <span class="text-blue-400">hypercode-v2</span> git:(<span class="text-red-400">main</span>) npm run dev</p>
+<p class="mb-1 text-white">&gt; ready on http://localhost:3000</p>
+<p class="mb-1 text-green-400">[success] database connected</p>
+<p class="mb-1 text-blue-300">info  - Loaded env from .env.local</p>
+<p class="mb-1 text-white">event - compiled client and server successfully in 1241 ms (156 modules)</p>
+<p class="mb-1 text-yellow-500">warn  - Fast Refresh had to perform a full reload</p>
+<div class="flex items-center gap-1 mt-2">
+<span class="text-green-500">➜</span>
+<span class="text-blue-400">hypercode-v2</span>
+<span class="text-white">git:(</span><span class="text-red-400">main</span><span class="text-white">)</span>
+<span class="w-1.5 h-4 bg-gray-500 animate-pulse block"></span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- Bottom Status Bar -->
+<footer class="h-8 border-t border-border-dark bg-surface-dark flex items-center justify-between px-4 text-[11px] font-medium text-text-muted select-none shrink-0 z-20">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1 hover:text-white cursor-pointer group bg-[#1a261a] px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] group-hover:text-primary">call_split</span>
+                 main
+            </div>
+<div class="flex items-center gap-1 hover:text-white cursor-pointer px-2 py-0.5">
+<span class="material-symbols-outlined text-[14px]">cancel</span>
+                 0 errors
+            </div>
+<div class="flex items-center gap-1 hover:text-white cursor-pointer px-2 py-0.5">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                 0 warnings
+            </div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-1 hidden sm:flex">
+                 Ln 14, Col 1
+            </div>
+<div class="flex items-center gap-1 hidden sm:flex">
+                 UTF-8
+            </div>
+<div class="flex items-center gap-2 text-primary bg-primary/10 px-3 py-0.5 rounded-full border border-primary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                 HyperCode Server Online
+            </div>
+<div class="flex items-center gap-1 hover:text-white cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">notifications_active</span>
+</div>
+</div>
+</footer>
+</body></html>
