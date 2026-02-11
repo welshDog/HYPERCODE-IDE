@@ -1,0 +1,16 @@
+{
+  "name": "hypercode-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "yarn workspaces run build",
+    "dev": "yarn workspace @hypercode/ide dev",
+    "test": "yarn workspaces run test",
+    "clean": "rm -rf node_modules && yarn workspaces run clean"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
+}
